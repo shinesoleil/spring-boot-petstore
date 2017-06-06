@@ -2,14 +2,18 @@ package com.thoughtworks.petstore;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.ValueInstantiator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.thoughtworks.petstore.core.order.LineItem;
+import com.thoughtworks.petstore.core.order.Order;
 import com.thoughtworks.petstore.core.pet.Pet;
 import org.javamoney.moneta.Money;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +26,22 @@ import org.springframework.data.util.TypeInformation;
 import javax.money.MonetaryAmount;
 import javax.money.format.MonetaryFormats;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Configuration
-class JacksonCustomizations {
+public class JacksonCustomizations {
 
-    public @Bean
+    public
+    @Bean
     Module moneyModule() {
         return new MoneyModule();
     }
 
-    public @Bean Module restbucksModule() {
+    public
+    @Bean
+    Module restbucksModule() {
         return new RestbucksModule();
     }
 
@@ -42,6 +51,15 @@ class JacksonCustomizations {
         public RestbucksModule() {
 
             setMixInAnnotation(Pet.class, PetMixin.class);
+            setMixInAnnotation(Order.class, OrderMixin.class);
+            setMixInAnnotation(LineItem.class, LineItemMixin.class);
+
+        }
+
+        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.ANY)
+        interface LineItemMixin {
+            @JsonIgnore
+            MonetaryAmount getPrice();
         }
 
         @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.NONE)
@@ -51,12 +69,25 @@ class JacksonCustomizations {
             public PetMixin(@JsonProperty("name") String name,
                             @JsonProperty("description") String description,
                             @JsonProperty("price") MonetaryAmount price,
-                            @JsonProperty("quantity") int quantity) {}
+                            @JsonProperty("quantity") int quantity) {
+            }
+        }
+
+        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.ANY)
+        interface OrderMixin {
+
+            @JsonSerialize(using = MoneyModule.MonetaryAmountSerializer.class)
+            MonetaryAmount getPrice();
+
+            @JsonProperty("items")
+            @JsonIgnore
+            List<LineItem> getLineItems();
+
         }
     }
 
     @SuppressWarnings("serial")
-    static class MoneyModule extends SimpleModule {
+    public static class MoneyModule extends SimpleModule {
 
         public MoneyModule() {
 
@@ -70,7 +101,7 @@ class JacksonCustomizations {
          *
          * @author Oliver Gierke
          */
-        static class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount>
+        public static class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount>
             implements JsonSchemaPropertyCustomizer {
 
             private static final Pattern MONEY_PATTERN;

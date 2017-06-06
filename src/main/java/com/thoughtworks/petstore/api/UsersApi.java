@@ -1,5 +1,7 @@
 package com.thoughtworks.petstore.api;
 
+import com.thoughtworks.petstore.core.order.OrderRepository;
+import com.thoughtworks.petstore.core.pet.PetRepository;
 import com.thoughtworks.petstore.core.user.Email;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,10 +28,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Component
 public class UsersApi {
     private UserRepository userRepository;
+    private OrderRepository orderRepository;
+    private PetRepository petRepository;
 
     @Autowired
-    public UsersApi(UserRepository userRepository) {
+    public UsersApi(UserRepository userRepository, OrderRepository orderRepository, PetRepository petRepository) {
         this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.petRepository = petRepository;
     }
 
     @POST
@@ -40,11 +47,14 @@ public class UsersApi {
        return Response.status(201).entity(user).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("{userId}")
-    public User getUser(@PathParam("userId") String userId) {
-        return userRepository.findOne(userId);
+    public UserApi getUser(@PathParam("userId") String userId) {
+        User user = userRepository.findOne(userId);
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
+            return new UserApi(user, orderRepository);
+        }
     }
 }
 

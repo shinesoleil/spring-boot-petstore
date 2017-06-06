@@ -15,7 +15,6 @@ public class SpringBootPetStoreApplication {
 		SpringApplication.run(SpringBootPetStoreApplication.class, args);
 	}
 
-	@Bean
 	CommandLineRunner initData(PetRepository petRepository) {
 		return args -> {
 			Pet americanShorthair = new Pet(
