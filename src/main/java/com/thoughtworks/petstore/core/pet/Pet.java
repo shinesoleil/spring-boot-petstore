@@ -1,10 +1,11 @@
-package com.thoughtworks.petstore.core;
+package com.thoughtworks.petstore.core.pet;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.money.MonetaryAmount;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class Pet {
     private Long id;
 
     private String name;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private MonetaryAmount price;
     private int quantity;

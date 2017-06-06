@@ -1,14 +1,12 @@
 package com.thoughtworks.petstore;
 
-import com.thoughtworks.petstore.core.Pet;
-import com.thoughtworks.petstore.core.PetRepository;
+import com.thoughtworks.petstore.core.pet.Pet;
+import com.thoughtworks.petstore.core.pet.PetRepository;
 import org.javamoney.moneta.Money;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import javax.money.Monetary;
 
 @SpringBootApplication
 public class SpringBootPetStoreApplication {
