@@ -35,7 +35,7 @@ public class UsersApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(@Valid UserParams userParams) {
-       User user = new User(userParams.getUsername(), new Email(userParams.getEmail()), userParams.getPassword());
+       User user = User.customer(userParams.getUsername(), new Email(userParams.getEmail()), userParams.getPassword());
        user = userRepository.save(user);
        return Response.status(201).entity(user).build();
     }

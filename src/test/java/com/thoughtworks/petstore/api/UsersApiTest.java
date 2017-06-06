@@ -86,7 +86,7 @@ public class UsersApiTest {
 
     @Test
     public void should_get_one_user_success() throws Exception {
-        User user = new User("aisensiy", new Email("aisensiy@163.com"), "123");
+        User user = User.customer("aisensiy", new Email("aisensiy@163.com"), "123");
         userRepository.save(user);
 
         given()
@@ -95,6 +95,7 @@ public class UsersApiTest {
             .then()
             .statusCode(200)
             .body("username", equalTo(user.getUsername()))
-            .body("email.value", equalTo(user.getEmail().getValue()));
+            .body("email.value", equalTo(user.getEmail().getValue()))
+            .body("userType", equalTo("CUSTOMER"));
     }
 }
