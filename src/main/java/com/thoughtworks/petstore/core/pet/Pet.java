@@ -3,8 +3,8 @@ package com.thoughtworks.petstore.core.pet;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.joda.money.Money;
 
-import javax.money.MonetaryAmount;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,10 +22,10 @@ public class Pet {
     private String name;
     @Column(columnDefinition = "TEXT")
     private String description;
-    private MonetaryAmount price;
+    private Money price;
     private int quantity;
 
-    public Pet(String name, String description, MonetaryAmount price, int quantity) {
+    public Pet(String name, String description, Money price, int quantity) {
         this.name = name;
         this.description = description;
         this.price = price;

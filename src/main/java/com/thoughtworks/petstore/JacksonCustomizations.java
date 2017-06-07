@@ -15,51 +15,51 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.thoughtworks.petstore.core.order.LineItem;
 import com.thoughtworks.petstore.core.order.Order;
 import com.thoughtworks.petstore.core.pet.Pet;
-import org.javamoney.moneta.Money;
+import com.thoughtworks.petstore.core.user.User;
+import com.thoughtworks.petstore.core.user.UserType;
+import org.joda.money.Money;
+import org.joda.time.DateTime;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.rest.webmvc.json.JsonSchema;
 import org.springframework.data.rest.webmvc.json.JsonSchemaPropertyCustomizer;
 import org.springframework.data.util.TypeInformation;
 
-import javax.money.MonetaryAmount;
-import javax.money.format.MonetaryFormats;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
 @Configuration
 public class JacksonCustomizations {
 
-    public
     @Bean
-    Module moneyModule() {
-        return new MoneyModule();
-    }
-
-    public
-    @Bean
-    Module restbucksModule() {
-        return new RestbucksModule();
+    public Module petStoreModules() {
+        return new PetStoreModules();
     }
 
     @SuppressWarnings("serial")
-    static class RestbucksModule extends SimpleModule {
+    public static class PetStoreModules extends SimpleModule {
 
-        public RestbucksModule() {
+        public PetStoreModules() {
+            addSerializer(Money.class, new MoneySerializer());
+            addSerializer(DateTime.class, new DateTimeSerializer());
+            addValueInstantiator(Money.class, new MoneyInstantiator());
 
             setMixInAnnotation(Pet.class, PetMixin.class);
             setMixInAnnotation(Order.class, OrderMixin.class);
             setMixInAnnotation(LineItem.class, LineItemMixin.class);
-
+            setMixInAnnotation(User.class, UserMixin.class);
         }
 
-        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.ANY)
-        interface LineItemMixin {
-            @JsonIgnore
-            MonetaryAmount getPrice();
+        public interface UserMixin {
+            @JsonProperty("type")
+            public UserType getUserType();
+        }
+
+        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
+        public interface LineItemMixin {
+            @JsonSerialize(using = MoneySerializer.class)
+            Money getPrice();
         }
 
         @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.NONE)
@@ -68,40 +68,39 @@ public class JacksonCustomizations {
             @JsonCreator
             public PetMixin(@JsonProperty("name") String name,
                             @JsonProperty("description") String description,
-                            @JsonProperty("price") MonetaryAmount price,
+                            @JsonProperty("price") Money price,
                             @JsonProperty("quantity") int quantity) {
             }
         }
 
-        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.ANY)
+        @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
         interface OrderMixin {
 
-            @JsonSerialize(using = MoneyModule.MonetaryAmountSerializer.class)
-            MonetaryAmount getPrice();
+            @JsonProperty("price")
+            Money getPrice();
 
             @JsonProperty("items")
-            @JsonIgnore
             List<LineItem> getLineItems();
 
         }
-    }
 
-    @SuppressWarnings("serial")
-    public static class MoneyModule extends SimpleModule {
+        public static class DateTimeSerializer extends StdSerializer<DateTime> {
 
-        public MoneyModule() {
+            protected DateTimeSerializer() {
+                super(DateTime.class);
+            }
 
-            addSerializer(MonetaryAmount.class, new MonetaryAmountSerializer());
-            addValueInstantiator(MonetaryAmount.class, new MoneyInstantiator());
+            @Override
+            public void serialize(DateTime value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+                if (value == null) {
+                    gen.writeNull();
+                } else {
+                    gen.writeString(value.toString());
+                }
+            }
         }
 
-        /**
-         * A dedicated serializer to render {@link MonetaryAmount} instances as formatted {@link String}. Also implements
-         * {@link JsonSchemaPropertyCustomizer} to expose the different rendering to the schema exposed by Spring Data REST.
-         *
-         * @author Oliver Gierke
-         */
-        public static class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount>
+        public static class MoneySerializer extends StdSerializer<Money>
             implements JsonSchemaPropertyCustomizer {
 
             private static final Pattern MONEY_PATTERN;
@@ -119,28 +118,20 @@ public class JacksonCustomizations {
                 MONEY_PATTERN = Pattern.compile(builder.toString());
             }
 
-            public MonetaryAmountSerializer() {
-                super(MonetaryAmount.class);
+            public MoneySerializer() {
+                super(Money.class);
             }
 
-            /*
-             * (non-Javadoc)
-             * @see com.fasterxml.jackson.databind.ser.std.StdSerializer#serialize(java.lang.Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
-             */
             @Override
-            public void serialize(MonetaryAmount value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+            public void serialize(Money value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 
                 if (value != null) {
-                    jgen.writeString(MonetaryFormats.getAmountFormat(LocaleContextHolder.getLocale()).format(value));
+                    jgen.writeString(value.toString());
                 } else {
                     jgen.writeNull();
                 }
             }
 
-            /*
-             * (non-Javadoc)
-             * @see org.springframework.data.rest.webmvc.json.JsonSchemaPropertyCustomizer#customize(org.springframework.data.rest.webmvc.json.JsonSchema.JsonSchemaProperty, org.springframework.data.util.TypeInformation)
-             */
             @Override
             public JsonSchema.JsonSchemaProperty customize(JsonSchema.JsonSchemaProperty property, TypeInformation<?> type) {
                 return property.withType(String.class).withPattern(MONEY_PATTERN);
@@ -149,31 +140,19 @@ public class JacksonCustomizations {
 
         static class MoneyInstantiator extends ValueInstantiator {
 
-            /*
-             * (non-Javadoc)
-             * @see com.fasterxml.jackson.databind.deser.ValueInstantiator#getValueTypeDesc()
-             */
             @Override
             public String getValueTypeDesc() {
-                return MonetaryAmount.class.toString();
+                return Money.class.toString();
             }
 
-            /*
-             * (non-Javadoc)
-             * @see com.fasterxml.jackson.databind.deser.ValueInstantiator#canCreateFromString()
-             */
             @Override
             public boolean canCreateFromString() {
                 return true;
             }
 
-            /*
-             * (non-Javadoc)
-             * @see com.fasterxml.jackson.databind.deser.ValueInstantiator#createFromString(com.fasterxml.jackson.databind.DeserializationContext, java.lang.String)
-             */
             @Override
             public Object createFromString(DeserializationContext context, String value) throws IOException {
-                return Money.parse(value, MonetaryFormats.getAmountFormat(LocaleContextHolder.getLocale()));
+                return Money.parse(value);
             }
         }
     }

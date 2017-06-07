@@ -9,7 +9,7 @@ import com.thoughtworks.petstore.core.user.Email;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
 import io.restassured.RestAssured;
-import org.javamoney.moneta.Money;
+import org.joda.money.CurrencyUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -38,6 +39,7 @@ public class OrdersApiTest {
 
     @Autowired
     PetRepository petRepository;
+
     private Pet cat;
     private Pet doggy;
     private User customer;
@@ -46,8 +48,8 @@ public class OrdersApiTest {
     public void setUp() throws Exception {
         RestAssured.port = port;
 
-        cat = new Pet("cat", "desc", Money.of(3000, "CNY"), 10);
-        doggy = new Pet("dog", "desc", Money.of(2000, "CNY"), 12);
+        cat = new Pet("cat", "desc", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 10);
+        doggy = new Pet("dog", "desc", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 12);
 
         cat = petRepository.save(cat);
         doggy = petRepository.save(doggy);
@@ -88,6 +90,10 @@ public class OrdersApiTest {
             .when()
             .get("/users/{userId}/orders/{orderId}", customer.getUsername(), order.getId())
             .then()
-            .statusCode(200);
+            .statusCode(200)
+            .body("username", equalTo("aisensiy"))
+            .body("items[0].price", equalTo(order.getLineItems().get(0).getPrice().toString()))
+            .body("items[0].quantity", equalTo(1))
+            .body("price", equalTo(order.getPrice().toString()));
     }
 }

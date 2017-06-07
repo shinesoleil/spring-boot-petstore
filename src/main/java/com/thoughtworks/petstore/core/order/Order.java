@@ -9,21 +9,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.javamoney.moneta.Money;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
+import org.joda.time.DateTime;
 
-import javax.money.MonetaryAmount;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +37,7 @@ public class Order {
     @Id
     private String id;
 
-    private LocalDateTime orderedDate;
+    private DateTime orderedDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -54,16 +52,16 @@ public class Order {
     public Order(String username, Collection<LineItem> items) {
         this.id = UUID.randomUUID().toString();
         this.status = Status.PAYMENT_EXPECTED;
-        this.orderedDate = LocalDateTime.now();
+        this.orderedDate = DateTime.now();
         this.username = username;
         this.lineItems.addAll(items);
     }
 
-    public MonetaryAmount getPrice() {
+    public Money getPrice() {
 
         return lineItems.stream().
-            map(item -> item.getPrice().multiply(item.getQuantity())).
-            reduce(MonetaryAmount::add).orElse(Money.of(0.0, "CNY"));
+            map(item -> item.getPrice().multipliedBy(item.getQuantity())).
+            reduce(Money::plus).orElse(Money.of(CurrencyUnit.of("CNY"), 0));
     }
 
     public void markPaid() {

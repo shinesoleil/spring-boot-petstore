@@ -65,7 +65,7 @@ public class UsersApiTest {
             .post("/users")
             .then()
             .statusCode(400)
-            .body("[0].field", equalTo("email"));
+            .body("fieldErrors[0].field", equalTo("email"));
     }
 
     @Test
@@ -96,6 +96,6 @@ public class UsersApiTest {
             .statusCode(200)
             .body("username", equalTo(user.getUsername()))
             .body("email.value", equalTo(user.getEmail().getValue()))
-            .body("userType", equalTo("CUSTOMER"));
+            .body("type", equalTo("CUSTOMER"));
     }
 }

@@ -7,9 +7,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.joda.money.Money;
 
-import javax.money.MonetaryAmount;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,9 +24,9 @@ public class LineItem {
     private Long petId;
     private int quantity;
 
-    private MonetaryAmount price;
+    private Money price;
 
-    public LineItem(Long petId, int quantity, MonetaryAmount price) {
+    public LineItem(Long petId, int quantity, Money price) {
         this.petId = petId;
         this.quantity = quantity;
         this.price = price;

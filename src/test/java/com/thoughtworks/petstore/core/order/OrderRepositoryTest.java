@@ -1,14 +1,12 @@
 package com.thoughtworks.petstore.core.order;
 
-import org.javamoney.moneta.Money;
-import org.javamoney.moneta.internal.MoneyAmountBuilder;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.money.MonetaryAmount;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,11 +22,11 @@ public class OrderRepositoryTest {
     @Test
     public void should_create_order_success() throws Exception {
         Order order = new Order("aisensiy", asList(
-            new LineItem(1L, 2, Money.of(3000, "CNY"))
+            new LineItem(1L, 2, org.joda.money.Money.of(CurrencyUnit.of("CNY"), 3000))
         ));
         order = orderRepository.save(order);
         assertThat(order.getId(), notNullValue());
-        assertThat(order.getPrice(), is(Money.of(6000, "CNY")));
+        assertThat(order.getPrice(), is(Money.of(CurrencyUnit.of("CNY"), 6000)));
 
         Order fetchedOrder = orderRepository.findOne(order.getId());
         assertThat(fetchedOrder, notNullValue());
