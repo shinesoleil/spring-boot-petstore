@@ -10,9 +10,14 @@ import com.thoughtworks.petstore.core.pet.PetRepository;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
 import lombok.Getter;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +43,23 @@ public class UserOrdersController {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.petRepository = petRepository;
+    }
+
+    @GetMapping
+    public PagedResources<Order> orders(@PathVariable("username") String username, Pageable pageable) {
+        User user = userRepository.findOne(username);
+        if (user == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        Page<Order> orders = orderRepository.findByUsername(username, pageable);
+        return new PagedResources<>(
+            orders.getContent(),
+            new PagedResources.PageMetadata(
+                orders.getSize(),
+                orders.getNumber(),
+                orders.getTotalElements(),
+                orders.getTotalPages()));
     }
 
     @PostMapping

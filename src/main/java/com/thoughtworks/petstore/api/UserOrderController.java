@@ -6,6 +6,7 @@ import com.thoughtworks.petstore.core.order.OrderRepository;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,6 @@ public class UserOrderController {
             throw new ResourceNotFoundException();
         }
 
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(new Resource<Order>(order));
     }
 }

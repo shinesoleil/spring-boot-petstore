@@ -96,4 +96,27 @@ public class OrdersApiTest {
             .body("items[0].quantity", equalTo(1))
             .body("price", equalTo(order.getPrice().toString()));
     }
+
+    @Test
+    public void should_get_user_orders() throws Exception {
+        Order order1 = new Order(customer.getUsername(), asList(
+            new LineItem(doggy.getId(), 1, doggy.getPrice())
+        ));
+
+        order1 = orderRepository.save(order1);
+
+        Order order2 = new Order(customer.getUsername(), asList(
+            new LineItem(cat.getId(), 1, cat.getPrice())
+        ));
+
+        order2 = orderRepository.save(order2);
+
+        given()
+            .when()
+            .get("/users/{userId}/orders", customer.getUsername())
+            .then()
+            .statusCode(200)
+            .body("_embedded.orders.size()", equalTo(2));
+
+    }
 }
