@@ -30,6 +30,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-jersey')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('io.jsonwebtoken:jjwt:0.7.0')
     compile('org.joda:joda-money:0.12')
     compile('joda-time:joda-time:2.9.9')
     runtime('com.h2database:h2')

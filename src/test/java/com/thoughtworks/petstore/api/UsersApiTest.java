@@ -3,6 +3,7 @@ package com.thoughtworks.petstore.api;
 import com.thoughtworks.petstore.core.user.Email;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
+import com.thoughtworks.petstore.service.JwtService;
 import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class UsersApiTest {
     @Test
     public void should_create_user_success() throws Exception {
         Map<String, Object> userParams = new HashMap<String, Object>() {{
-            put("username", "aisensiy");
+            put("username", "test");
             put("password", "password");
             put("email", "aisensiy@163.com");
         }};
@@ -47,7 +49,7 @@ public class UsersApiTest {
             .post("/users")
             .then()
             .statusCode(201)
-            .body("username", equalTo("aisensiy"));
+            .body("username", equalTo("test"));
     }
 
     @Test

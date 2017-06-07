@@ -2,6 +2,9 @@ package com.thoughtworks.petstore;
 
 import com.thoughtworks.petstore.core.pet.Pet;
 import com.thoughtworks.petstore.core.pet.PetRepository;
+import com.thoughtworks.petstore.core.user.Email;
+import com.thoughtworks.petstore.core.user.User;
+import com.thoughtworks.petstore.core.user.UserRepository;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +20,7 @@ public class SpringBootPetStoreApplication {
 	}
 
 	@Bean
-	CommandLineRunner initData(PetRepository petRepository) {
+	CommandLineRunner initData(PetRepository petRepository, UserRepository userRepository) {
 		return args -> {
 			Pet americanShorthair = new Pet(
 				"美国短毛猫",
@@ -42,6 +45,9 @@ public class SpringBootPetStoreApplication {
 			petRepository.save(husky);
 			petRepository.save(toyPoodl);
 			petRepository.save(chihuahua);
+
+			User admin = User.admin("aisensiy", new Email("aisensiy@163.com"), "demo");
+			userRepository.save(admin);
 		};
 	}
 }

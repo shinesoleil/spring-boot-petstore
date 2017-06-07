@@ -8,6 +8,7 @@ import com.thoughtworks.petstore.core.pet.PetRepository;
 import com.thoughtworks.petstore.core.user.Email;
 import com.thoughtworks.petstore.core.user.User;
 import com.thoughtworks.petstore.core.user.UserRepository;
+import com.thoughtworks.petstore.service.JwtService;
 import io.restassured.RestAssured;
 import org.joda.money.CurrencyUnit;
 import org.junit.Before;
@@ -16,14 +17,25 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -34,11 +46,14 @@ public class OrdersApiTest {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
+    @MockBean
     OrderRepository orderRepository;
 
     @Autowired
     PetRepository petRepository;
+
+    @MockBean
+    private JwtService jwtService;
 
     private Pet cat;
     private Pet doggy;
@@ -56,6 +71,8 @@ public class OrdersApiTest {
 
         customer = User.customer("aisensiy", new Email("aisensiy@163.com"), "123");
         userRepository.save(customer);
+
+        when(jwtService.getUsername(any())).thenReturn(customer.getUsername());
     }
 
     @Test
@@ -84,7 +101,7 @@ public class OrdersApiTest {
             new LineItem(doggy.getId(), 1, doggy.getPrice())
         ));
 
-        order = orderRepository.save(order);
+        when(orderRepository.findOne(eq(order.getId()))).thenReturn(order);
 
         given()
             .when()
@@ -103,13 +120,11 @@ public class OrdersApiTest {
             new LineItem(doggy.getId(), 1, doggy.getPrice())
         ));
 
-        order1 = orderRepository.save(order1);
-
         Order order2 = new Order(customer.getUsername(), asList(
             new LineItem(cat.getId(), 1, cat.getPrice())
         ));
 
-        order2 = orderRepository.save(order2);
+        when(orderRepository.findByUsername(eq(customer.getUsername()), any())).thenReturn(new PageImpl<Order>(asList(order1, order2)));
 
         given()
             .when()

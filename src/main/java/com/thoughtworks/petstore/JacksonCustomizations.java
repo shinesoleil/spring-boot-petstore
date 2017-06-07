@@ -60,6 +60,9 @@ public class JacksonCustomizations {
         public interface LineItemMixin {
             @JsonSerialize(using = MoneySerializer.class)
             Money getPrice();
+
+            @JsonIgnore
+            long getId();
         }
 
         @JsonAutoDetect(isGetterVisibility = JsonAutoDetect.Visibility.NONE)
