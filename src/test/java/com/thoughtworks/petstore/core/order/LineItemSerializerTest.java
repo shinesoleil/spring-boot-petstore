@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class LineItemSerializerTest {
     @Test
     public void should_get_money_success() throws Exception {
-        LineItem lineItem = new LineItem(1L, 1, org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000));
+        LineItem lineItem = new LineItem(1L, "doggy", 1, org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(LineItem.class, JacksonCustomizations.PetStoreModules.LineItemMixin.class);
         String s = objectMapper.writeValueAsString(lineItem);

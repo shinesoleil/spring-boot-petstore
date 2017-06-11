@@ -27,6 +27,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/pets", "/pets/*").permitAll()
+            .antMatchers(HttpMethod.OPTIONS, "/pets", "/pets/*", "/users/*/**").permitAll()
             .antMatchers("/auth", "/users", "/users/*").permitAll()
             .anyRequest().authenticated();
 

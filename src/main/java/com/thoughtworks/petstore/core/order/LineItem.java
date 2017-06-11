@@ -23,11 +23,13 @@ public class LineItem {
 
     private Long petId;
     private int quantity;
+    private String name;
 
     private Money price;
 
-    public LineItem(Long petId, int quantity, Money price) {
+    public LineItem(Long petId, String name, int quantity, Money price) {
         this.petId = petId;
+        this.name = name;
         this.quantity = quantity;
         this.price = price;
     }

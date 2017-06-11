@@ -77,7 +77,7 @@ public class UserOrdersController {
                 bindingResult.rejectValue("items", "INVALID", "invalid pet id " + lineItemParam.getPetId());
                 throw new InvalidRequestException("Error in create order", bindingResult);
             }
-            return new LineItem(pet.getId(), lineItemParam.getQuantity(), pet.getPrice());
+            return new LineItem(pet.getId(), pet.getName(), lineItemParam.getQuantity(), pet.getPrice());
         }).collect(Collectors.toList()));
         orderRepository.save(order);
         return ResponseEntity.status(201).body(order);

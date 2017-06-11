@@ -22,7 +22,7 @@ public class OrderRepositoryTest {
     @Test
     public void should_create_order_success() throws Exception {
         Order order = new Order("aisensiy", asList(
-            new LineItem(1L, 2, org.joda.money.Money.of(CurrencyUnit.of("CNY"), 3000))
+            new LineItem(1L, "doggy", 2, org.joda.money.Money.of(CurrencyUnit.of("CNY"), 3000))
         ));
         order = orderRepository.save(order);
         assertThat(order.getId(), notNullValue());

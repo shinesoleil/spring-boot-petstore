@@ -46,7 +46,7 @@ public class SpringBootPetStoreApplication {
 			petRepository.save(toyPoodl);
 			petRepository.save(chihuahua);
 
-			User admin = User.admin("aisensiy", new Email("aisensiy@163.com"), "demo");
+			User admin = User.admin("demo", new Email("demo@thoughtworks.com"), "demo");
 			userRepository.save(admin);
 		};
 	}

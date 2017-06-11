@@ -98,7 +98,7 @@ public class OrdersApiTest {
     @Test
     public void should_get_one_order_success() throws Exception {
         Order order = new Order(customer.getUsername(), asList(
-            new LineItem(doggy.getId(), 1, doggy.getPrice())
+            new LineItem(doggy.getId(), "doggy", 1, doggy.getPrice())
         ));
 
         when(orderRepository.findOne(eq(order.getId()))).thenReturn(order);
@@ -117,11 +117,11 @@ public class OrdersApiTest {
     @Test
     public void should_get_user_orders() throws Exception {
         Order order1 = new Order(customer.getUsername(), asList(
-            new LineItem(doggy.getId(), 1, doggy.getPrice())
+            new LineItem(doggy.getId(), "doggy", 1, doggy.getPrice())
         ));
 
         Order order2 = new Order(customer.getUsername(), asList(
-            new LineItem(cat.getId(), 1, cat.getPrice())
+            new LineItem(cat.getId(), "doggy", 1, cat.getPrice())
         ));
 
         when(orderRepository.findByUsername(eq(customer.getUsername()), any())).thenReturn(new PageImpl<Order>(asList(order1, order2)));

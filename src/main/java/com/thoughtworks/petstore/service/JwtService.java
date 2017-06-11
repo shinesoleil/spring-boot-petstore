@@ -28,7 +28,7 @@ public class JwtService {
 
         try {
             return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(authToken).getBody().getSubject();
-        } catch (SignatureException e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -36,7 +36,7 @@ public class JwtService {
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<String, Object>() {{
             put("sub", user.getUsername());
-            put("email", user.getEmail());
+            put("email", user.getEmail().toString());
         }};
 
         return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, secret.getBytes()).compact();
