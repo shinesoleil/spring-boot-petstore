@@ -24,10 +24,12 @@ public class Pet {
     private String description;
     private Money price;
     private int quantity;
+    private String pictureUrl;
 
-    public Pet(String name, String description, Money price, int quantity) {
+    public Pet(String name, String description, String pictureUrl, Money price, int quantity) {
         this.name = name;
         this.description = description;
+        this.pictureUrl = pictureUrl;
         this.price = price;
         this.quantity = quantity;
     }

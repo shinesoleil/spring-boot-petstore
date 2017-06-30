@@ -28,7 +28,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers(HttpMethod.GET, "/pets", "/pets/*").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/pets", "/pets/*", "/users/*/**").permitAll()
-            .antMatchers("/auth", "/users", "/users/*").permitAll()
+            .antMatchers("/auth", "/users", "/users/*", "/static/*/**", "/img/*/**").permitAll()
             .anyRequest().authenticated();
 
         http.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
