@@ -63,8 +63,8 @@ public class OrdersApiTest {
     public void setUp() throws Exception {
         RestAssured.port = port;
 
-        cat = new Pet("cat", "desc", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 10);
-        doggy = new Pet("dog", "desc", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 12);
+        cat = new Pet("cat", "desc", "cat.jpg", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 10);
+        doggy = new Pet("dog", "desc", "doggy.jpg", org.joda.money.Money.of(CurrencyUnit.of("CNY"), 4000), 12);
 
         cat = petRepository.save(cat);
         doggy = petRepository.save(doggy);
