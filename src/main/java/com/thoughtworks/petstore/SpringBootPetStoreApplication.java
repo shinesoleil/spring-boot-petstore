@@ -23,7 +23,7 @@ public class SpringBootPetStoreApplication {
 	CommandLineRunner initData(PetRepository petRepository, UserRepository userRepository) {
 		return args -> {
 			Pet americanShorthair = new Pet(
-				"美国短毛猫",
+				"美短",
 				"原产美国的一种猫，其祖先为欧洲早期移民带到北美的猫种，与英国短毛猫和欧洲短毛猫同类。据记载，五月花号上携带了数只猫以帮助除鼠。该品种的猫是在街头巷尾收集来的猫当中选种、并和进口品种如英国短毛猫、缅甸猫和波斯猫杂交培育而成。美国短毛猫在欧洲很罕见，但在日本颇受好评，在美国国内也较受欢迎。",
 				"/img/americanShorthair.jpg",
 				Money.of(CurrencyUnit.of("CNY"), 4000), 10);
