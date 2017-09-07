@@ -92,7 +92,7 @@ public class OrdersApiTest {
             .when()
             .post("/users/{userId}/orders", customer.getUsername())
             .then()
-            .statusCode(201); //201
+            .statusCode(200); //201
     }
 
     @Test
