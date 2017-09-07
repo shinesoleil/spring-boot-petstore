@@ -66,7 +66,7 @@ public class UsersApiTest {
             .when()
             .post("/users")
             .then()
-            .statusCode(400) //400
+            .statusCode(401) //400
             .body("fieldErrors[0].field", equalTo("email"));
     }
 
