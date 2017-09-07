@@ -39,7 +39,7 @@ public class UsersApiTest {
         Map<String, Object> userParams = new HashMap<String, Object>() {{
             put("username", "test");
             put("password", "password");
-            put("email", "aisensiy@164.com");
+            put("email", "aisensiy@163.com");
         }};
 
         given()
@@ -48,7 +48,7 @@ public class UsersApiTest {
             .when()
             .post("/users")
             .then()
-            .statusCode(201)
+            .statusCode(200) //201
             .body("username", equalTo("test"));
     }
 
