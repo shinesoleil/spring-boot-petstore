@@ -5,14 +5,11 @@ pipeline {
       steps {
         echo 'Building......'
         sh './gradlew findbugsMain'
-        findbugs()
       }
       post {
         always {
-          findbugs 'build/reports/findbugs/main.xml'
-          
+          findbugs('build/reports/findbugs/main.xml')
         }
-        
       }
     }
     stage('Test') {
