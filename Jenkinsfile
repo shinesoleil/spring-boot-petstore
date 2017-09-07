@@ -9,7 +9,7 @@ pipeline {
       post {
         always {
           junit 'build/test-results/test/TEST-*.xml'
-          
+          findbugs 'build/reports/findbugs/*.xml'
         }
       }
     }
@@ -22,7 +22,6 @@ pipeline {
           },
           "Test2": {
             echo 'Testing2......'
-            findbugs 'build/reports/findbugs/*.xml'
           }
         )
       }
