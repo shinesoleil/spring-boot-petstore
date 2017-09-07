@@ -1,10 +1,10 @@
 pipeline {
   agent any
   stages {
-    stage('Test') {
+    stage('Build') {
       steps {
-        echo 'Testing..'
-        sh './gradlew clean test'
+        echo 'Building......'
+        sh './gradlew clean build'
       }
       post {
         always {
@@ -12,9 +12,14 @@ pipeline {
         }
       }
     }
+    stage('Test') {
+      steps {
+        echo 'Testing......'
+      }
+    }
     stage('Deploy') {
       steps {
-        echo 'Deploying....'
+        echo 'Deploying......'
       }
     }
   }
