@@ -22,6 +22,7 @@ pipeline {
           },
           "Test2": {
             echo 'Testing2......'
+            findbugs 'build/reports/findbugs/*.xml'
           }
         )
       }
