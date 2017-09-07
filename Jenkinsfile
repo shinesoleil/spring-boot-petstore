@@ -4,11 +4,12 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building......'
-        sh './gradlew findbugsMain'
+        sh './gradlew clean build'
       }
       post {
         always {
-          findbugs('build/reports/findbugs/main.xml')
+          junit 'build/test-results/test/TEST-*.xml'
+          findbugs()
         }
       }
     }
