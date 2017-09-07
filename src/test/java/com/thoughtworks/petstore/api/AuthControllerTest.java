@@ -58,7 +58,7 @@ public class AuthControllerTest {
             .when()
             .post("/auth")
             .then()
-            .statusCode(201) //200
+            .statusCode(200) //200
             .body("token", equalTo("token"));
 
     }
