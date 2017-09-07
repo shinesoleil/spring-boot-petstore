@@ -22,7 +22,6 @@ pipeline {
           },
           "Test2": {
             echo 'Testing2......'
-            sh 'exit 1'
           }
         )
       }
