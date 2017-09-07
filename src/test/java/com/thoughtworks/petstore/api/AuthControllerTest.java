@@ -47,7 +47,7 @@ public class AuthControllerTest {
     public void should_login_success() throws Exception {
         Map<String, Object> loginParameter = new HashMap<String, Object>() {{
             put("username", "aisensiy");
-            put("password", "123");
+            put("password", "124");
         }};
 
         when(jwtService.generateToken(any())).thenReturn("token");

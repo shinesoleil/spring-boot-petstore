@@ -39,7 +39,7 @@ public class UsersApiTest {
         Map<String, Object> userParams = new HashMap<String, Object>() {{
             put("username", "test");
             put("password", "password");
-            put("email", "aisensiy@163.com");
+            put("email", "aisensiy@164.com");
         }};
 
         given()
