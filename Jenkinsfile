@@ -9,12 +9,23 @@ pipeline {
       post {
         always {
           junit 'build/test-results/test/TEST-*.xml'
+          
         }
+        
       }
     }
     stage('Test') {
       steps {
-        echo 'Testing......'
+        parallel(
+          "Test": {
+            echo 'Testing......'
+            
+          },
+          "test parallel pipeline": {
+            echo 'testing parallel'
+            
+          }
+        )
       }
     }
     stage('Deploy') {
