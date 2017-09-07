@@ -11,19 +11,18 @@ pipeline {
           junit 'build/test-results/test/TEST-*.xml'
           
         }
-        
       }
     }
     stage('Test') {
       steps {
         parallel(
-          "Test": {
-            echo 'Testing......'
+          "Test1": {
+            echo 'Testing1......'
             
           },
-          "test parallel pipeline": {
-            echo 'testing parallel'
-            
+          "Test2": {
+            echo 'Testing2......'
+            sh 'exit 1'
           }
         )
       }
