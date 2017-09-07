@@ -4,10 +4,11 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building......'
-        sh './gradlew clean build'
+        sh './gradlew findbugsMain'
       }
       post {
         always {
+          findbugs 'build/reports/findbugs/main.xml'
           junit 'build/test-results/test/TEST-*.xml'
         }
       }
@@ -17,7 +18,6 @@ pipeline {
         parallel(
           "Test1": {
             echo 'Testing1......'
-            
           },
           "Test2": {
             echo 'Testing2......'
