@@ -5,7 +5,7 @@ pipeline {
       steps {
         echo 'Testing..'
         sh './gradlew test'
-        junit 'report/junit/*xml'
+        junit '**/build/test-results/test/TEST-*.xml'
       }
     }
     stage('Deploy') {
