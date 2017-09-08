@@ -9,7 +9,7 @@ pipeline {
       post {
         always {
           junit 'build/test-results/test/TEST-*.xml'
-          findbugs()
+          findbugs(pattern: 'build/reports/findbugs/*.xml')
         }
       }
     }
