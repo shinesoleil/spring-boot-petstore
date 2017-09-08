@@ -8,6 +8,7 @@ pipeline {
       }
       post {
         always {
+          archive 'build/libs/*.jar'
           junit 'build/test-results/test/TEST-*.xml'
           findbugs(pattern: 'build/reports/findbugs/*.xml')
         }
@@ -18,11 +19,9 @@ pipeline {
         parallel(
           "Test1": {
             echo 'Testing1......'
-            
           },
           "Test2": {
             echo 'Testing2......'
-            
           }
         )
       }
