@@ -8,9 +8,11 @@ pipeline {
       }
       post {
         always {
-          archive 'build/libs/*.jar'
           junit 'build/test-results/test/TEST-*.xml'
           findbugs(pattern: 'build/reports/findbugs/*.xml')
+        }
+        failure {
+          archive 'build/libs/*.jar'
         }
       }
     }
