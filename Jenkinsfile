@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  triggers {
+    pollSCM('H 4/* 0 0 1-5')
+  }
   stages {
     stage('Build') {
       steps {
@@ -10,8 +13,6 @@ pipeline {
         always {
           junit 'build/test-results/test/TEST-*.xml'
           findbugs(pattern: 'build/reports/findbugs/*.xml')
-        }
-        failure {
           archive 'build/libs/*.jar'
         }
       }
