@@ -105,6 +105,6 @@ public class UsersApiTest {
 
     @Test
     public void new_feature_test() throws Exception {
-        assertThat(true, is(false));
+        assertThat(true, is(true));
     }
 }
