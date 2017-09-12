@@ -19,6 +19,8 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -99,5 +101,10 @@ public class UsersApiTest {
             .body("username", equalTo(user.getUsername()))
             .body("email.value", equalTo(user.getEmail().getValue()))
             .body("type", equalTo("CUSTOMER"));
+    }
+
+    @Test
+    public void new_feature_test() throws Exception {
+        assertThat(true, is(false));
     }
 }
