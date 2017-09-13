@@ -102,4 +102,9 @@ public class UsersApiTest {
             .body("email.value", equalTo(user.getEmail().getValue()))
             .body("type", equalTo("CUSTOMER"));
     }
+
+    @Test
+    public void test() throws Exception {
+        assertThat(true, is(false));
+    }
 }
