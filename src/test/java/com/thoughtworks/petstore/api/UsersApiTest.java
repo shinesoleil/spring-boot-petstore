@@ -103,8 +103,4 @@ public class UsersApiTest {
             .body("type", equalTo("CUSTOMER"));
     }
 
-    @Test
-    public void test() throws Exception {
-        assertThat(true, is(true));
-    }
 }
